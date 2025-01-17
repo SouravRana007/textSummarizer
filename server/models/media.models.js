@@ -18,6 +18,10 @@ const mediaSchema = new Schema(
       type: String,
       required: true,
     },
+    originalText: {
+      type: String,
+      required: true,
+    },
     summary: new Schema({
       short: {
         type: String,

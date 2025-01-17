@@ -1,30 +1,96 @@
-import Media from "../models/media.models.js";
 import { ObjectId } from "mongodb";
 
+import Media from "../models/media.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import asyncHandler from "../utils/asynchandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import {
+  generateSummaryFromFile,
+  generateSummaryFromText,
+} from "../services/summaryAI.js";
 
 const postMediaInfo = asyncHandler(async (req, res) => {
+  // TODO:
+  /*
+    1. File upload
+    2. Validation only pdf/image 
+    3. Parse file content
+    4. generate summary from content using chatgpt
+    */
   const userId = req.user?.id;
-  const { filePath, fileType, fileName, summary } = req.body;
-  if (!fileName || !filePath || !fileType) {
-    throw new ApiError(400, "fileName, filePath and fileType are required");
-  }
-  const existingMedia = await Media.findOne({ filePath, fileName, fileType });
 
-  if (existingMedia) {
-    throw new ApiError(400, "Media with the same file already exists");
+  const { fileName, summaryType } = req.body;
+
+  if (!fileName) {
+    throw new ApiError(400, "File name is required!");
   }
+  if (!summaryType) {
+    throw new ApiError(400, "Summary Type is required!");
+  }
+
+  const file = req.file;
+  const { summary, originalText } = await generateSummaryFromFile(
+    file,
+    summaryType
+  );
+
   const media = new Media({
     userId: new ObjectId(userId),
-    filePath,
-    fileType,
+    filePath: file.path,
+    fileType: file.mimetype,
     fileName,
-    summary,
+    originalText,
+    summary: {
+      [summaryType]: summary,
+    },
   });
+
   const savedMedia = await media.save();
   res.status(200).json(new ApiResponse(200, savedMedia));
+});
+
+export const putMediaInfo = asyncHandler(async (req, res) => {
+  const mediaId = req.params.mediaId;
+  const existingMedia = await Media.findById(new ObjectId(mediaId));
+  if (!existingMedia) {
+    throw new ApiError(404, "Media not found!");
+  }
+
+  const { summaryType } = req.body;
+
+  if (!summaryType) {
+    throw new ApiError(400, "Summary Type required!");
+  }
+
+  if (!["short", "medium", "long"].includes(summaryType)) {
+    throw new ApiError(400, "Invalid summary type!");
+  }
+
+  if (existingMedia.summary[summaryType]) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, { summary: existingMedia.summary[summaryType] })
+      );
+  }
+
+  const { summary } = await generateSummaryFromText(
+    existingMedia.originalText,
+    summaryType
+  );
+
+  await Media.updateOne(
+    { _id: new ObjectId(mediaId) },
+    {
+      [`summary.${summaryType}`]: summary,
+    }
+  );
+
+  res.status(200).json(
+    new ApiResponse(200, {
+      summary,
+    })
+  );
 });
 
 // get All

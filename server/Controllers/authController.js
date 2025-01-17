@@ -25,15 +25,15 @@ const register = asyncHandler(async (req, res) => {
       .json({ error: "User with this email already exists" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({
+  await User.create({
     name,
     email,
     password: hashedPassword,
   });
 
   res
-    .status(201)
-    .json(new ApiResponse(200, user, "User registered Successfully"));
+    .status(200)
+    .json(new ApiResponse(201, {}, "User registered Successfully"));
 });
 
 //login
