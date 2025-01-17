@@ -4,7 +4,7 @@ import {
   login,
   logout,
   userInfo,
-} from "../Controllers/userController.js";
+} from "../Controllers/authController.js";
 
 const router = Router();
 router.route("/register").post(register);

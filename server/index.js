@@ -3,20 +3,22 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import "./config.js";
 import { connectDB } from "./Database/db.js";
-import userRoute from "./Routes/userRoute.js";
+import authRoute from "./Routes/authRoute.js";
+import mediaRoute from "./Routes/mediaRoute.js";
 import { authMiddleware } from "./middleware/authMiddleware.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 // dotenv.config({
 //   path: "./.env",
-// });
+// });a
 
 const app = express();
 const PORT = process.env.PORT || 4001;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api", authMiddleware, userRoute);
+app.use("/api/auth", authMiddleware, authRoute);
+app.use("/api/files", authMiddleware, mediaRoute);
 
 app.use(errorHandler);
 

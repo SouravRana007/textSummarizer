@@ -11,21 +11,21 @@ const mediaSchema = new Schema(
     },
     userId: {
       type: Types.ObjectId,
-      required: true,
       ref: "User",
+      required: true,
     },
     fileName: {
       type: String,
       required: true,
     },
     summary: new Schema({
-      shortSummary: {
+      short: {
         type: String,
       },
-      mediumSummary: {
+      medium: {
         type: String,
       },
-      longSummary: {
+      long: {
         type: String,
       },
     }),

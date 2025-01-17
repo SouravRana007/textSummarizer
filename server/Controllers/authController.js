@@ -16,7 +16,7 @@ const register = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
   if (!email.includes === "@") {
-    throw new Error("@ symbol is required");
+    throw new ApiError(400, "@ symbol is required");
   }
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -37,41 +37,44 @@ const register = asyncHandler(async (req, res) => {
 });
 
 //login
-const login = async (req, res) => {
+const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  try {
-    if (!email || !password) {
-      throw new Error("Name and password is required");
-    }
-    const user = await User.findOne({ email });
-    if (user) {
-      const passwordOk = await bcrypt.compare(password, user.password);
-      if (!passwordOk) {
-        return res.status(422).json({ error: "Incorrect password" });
-      }
-      if (passwordOk) {
-        jwt.sign(
-          { email: user.email, id: user._id },
-          jwtSecret,
-          {},
-          (err, token) => {
-            console.log("fail to generate token: ", err);
-            if (err) {
-              return res
-                .status(500)
-                .json({ error: "Failed to generate token" });
-            }
-            res.cookie("token", token).json({ user });
-          }
-        );
-      }
-    }
-  } catch (error) {
-    res.status(422).json({ error: error.message });
+
+  if (!email || !password) {
+    throw new Error("Name and password is required");
   }
-};
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new ApiError(404, "User not found!");
+  }
+
+  const passwordOk = await bcrypt.compare(password, user.password);
+  if (!passwordOk) {
+    return res.status(422).json({ error: "Incorrect password" });
+  }
+  if (passwordOk) {
+    jwt.sign(
+      { email: user.email, id: user._id },
+      jwtSecret,
+      {},
+      (err, token) => {
+        if (err) {
+          console.log("fail to generate token: ", err);
+          return res.status(500).json({ error: "Failed to generate token" });
+        }
+        res.cookie("token", token).json({ token });
+        // console.log(token);
+      }
+    );
+  }
+});
 // logout endpoint
-const logout = async (req, res) => {
+const logout = asyncHandler(async (req, res) => {
+  const token = req.cookies?.token;
+  if (!token) {
+    throw new ApiError(400, "No user is logged-in");
+  }
   res
     .cookie("token", "", {
       httpOnly: true,
@@ -79,8 +82,8 @@ const logout = async (req, res) => {
       sameSite: "Strict",
       expires: new Date(0), // Expire the cookie immediately
     })
-    .json({ success: true, message: "Logged out successfully" });
-};
+    .json(new ApiResponse(200, "Logged-out successfully"));
+});
 
 //current user details authMiddleware used
 const userInfo = async (req, res) => {
