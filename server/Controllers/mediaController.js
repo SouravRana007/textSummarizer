@@ -70,7 +70,10 @@ export const putMediaInfo = asyncHandler(async (req, res) => {
     return res
       .status(200)
       .json(
-        new ApiResponse(200, { summary: existingMedia.summary[summaryType] })
+        new ApiResponse(200, {
+          originalText: existingMedia.originalText,
+          summary: existingMedia.summary[summaryType],
+        })
       );
   }
 
