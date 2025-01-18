@@ -14,13 +14,13 @@ const Login = () => {
   const loginMutation = useMutation({
     mutationFn: login,
     onError: (error) => {
-      toast.error(error.response?.data?.error || "Something wnet wrong!");
+      toast.error(error.response?.data?.error || "Something went wrong!");
     },
     onSuccess: () => {
       setEmail("");
       setPassword("");
       toast.success("Login Success!");
-      navigate("/");
+      navigate("/files");
     },
   });
 

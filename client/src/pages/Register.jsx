@@ -15,7 +15,7 @@ const Register = () => {
   const registerMutation = useMutation({
     mutationFn: register,
     onError: (error) => {
-      toast.error(error.response?.data?.error || "Something wnet wrong!");
+      toast.error(error.response?.data?.error || "Something went wrong!");
     },
     onSuccess: () => {
       setName("");
@@ -59,7 +59,7 @@ const Register = () => {
       registerMutation.mutate({ name, email, password });
     }
   };
-  console.log("muattion: ", registerMutation.isPending);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       {registerMutation.isPending && <Loader />}

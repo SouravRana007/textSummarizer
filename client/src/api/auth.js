@@ -16,7 +16,7 @@ export const register = ({ name, email, password }) => {
 };
 
 export const logout = () => {
-  return axios.post("/api/auth/logout");
+  return axios.get("/api/auth/logout");
 };
 
 export const getCurrentUser = () => {
