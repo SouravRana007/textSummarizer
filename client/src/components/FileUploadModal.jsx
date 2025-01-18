@@ -105,6 +105,17 @@ const FileUploadModal = () => {
             {file ? `File name: ${file.name}` : "no files uploaded yet"}
           </p>
 
+          <p className="text-md font-extralight">
+            Download Sample pdf for upload:{" "}
+            <a
+              className="font-semibold text-secondary-content"
+              href="/SOURAVRANARESUME.pdf"
+              target="_blank"
+            >
+              Link
+            </a>
+          </p>
+
           <div className="modal-action">
             <button className="btn btn-neutral mr-2" onClick={onSubmit}>
               Submit

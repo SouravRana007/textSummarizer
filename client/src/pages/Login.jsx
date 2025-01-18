@@ -17,6 +17,7 @@ const Login = () => {
       toast.error(error.response?.data?.error || "Something went wrong!");
     },
     onSuccess: () => {
+      debugger;
       setEmail("");
       setPassword("");
       toast.success("Login Success!");

@@ -10,6 +10,7 @@ const Header = () => {
   const userQuery = useQuery({
     queryKey: ["user"],
     queryFn: getCurrentUser,
+    retry: 0,
   });
 
   const isLoggedIn = Boolean(userQuery.data?.data?.id);
