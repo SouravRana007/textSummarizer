@@ -10,13 +10,6 @@ import {
 } from "../services/summaryAI.js";
 
 const postMediaInfo = asyncHandler(async (req, res) => {
-  // TODO:
-  /*
-    1. File upload
-    2. Validation only pdf/image 
-    3. Parse file content
-    4. generate summary from content using chatgpt
-    */
   const userId = req.user?.id;
 
   const { fileName, summaryType } = req.body;
@@ -33,6 +26,10 @@ const postMediaInfo = asyncHandler(async (req, res) => {
     file,
     summaryType
   );
+
+  if (!originalText) {
+    throw new ApiError(400, "Unable to parse content. Please try other file!");
+  }
 
   const media = new Media({
     userId: new ObjectId(userId),
@@ -67,14 +64,12 @@ export const putMediaInfo = asyncHandler(async (req, res) => {
   }
 
   if (existingMedia.summary[summaryType]) {
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(200, {
-          originalText: existingMedia.originalText,
-          summary: existingMedia.summary[summaryType],
-        })
-      );
+    return res.status(200).json(
+      new ApiResponse(200, {
+        originalText: existingMedia.originalText,
+        summary: existingMedia.summary[summaryType],
+      })
+    );
   }
 
   const { summary } = await generateSummaryFromText(

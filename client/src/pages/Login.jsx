@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/auth";
@@ -10,6 +10,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: login,
@@ -17,10 +18,12 @@ const Login = () => {
       toast.error(error.response?.data?.error || "Something went wrong!");
     },
     onSuccess: () => {
-      debugger;
       setEmail("");
       setPassword("");
       toast.success("Login Success!");
+      queryClient.invalidateQueries({
+        queryKey: ["user"],
+      });
       navigate("/files");
     },
   });

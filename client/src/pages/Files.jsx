@@ -30,15 +30,18 @@ const Files = () => {
         </div>
 
         {filesQuery.isLoading && "Loading...."}
-        {!filesQuery.isLoading &&
-          filesQuery.data.data.data.map(({ fileName, createdAt, _id }) => (
-            <FileItem
-              key={_id}
-              fileId={_id}
-              fileName={fileName}
-              createdAt={createdAt}
-            />
-          ))}
+        <div className="grid md:grid-cols-3">
+          {!filesQuery.isLoading &&
+            filesQuery.data.data.data.map(({ fileName, createdAt, _id }) => (
+              <FileItem
+                key={_id}
+                fileId={_id}
+                fileName={fileName}
+                createdAt={createdAt}
+              />
+            ))}
+        </div>
+
         <FileUploadModal />
       </div>
     </Container>

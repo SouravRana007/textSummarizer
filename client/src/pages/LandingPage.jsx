@@ -1,8 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../api/auth";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const userQuery = useQuery({
+    queryKey: ["user"],
+    queryFn: getCurrentUser,
+    retry: 0,
+  });
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center">
@@ -12,12 +19,17 @@ const LandingPage = () => {
           Upload PDFs and images to get instant, AI-powered summaries of your
           documents
         </p>
-        <button
-          onClick={() => navigate("/login")}
-          className="btn btn-neutral btn-lg"
-        >
-          Get Started
-        </button>
+        {!userQuery.isLoading && (
+          <button
+            onClick={() => {
+              const isLoggedIn = userQuery.data?.data?.id;
+              navigate(isLoggedIn ? "/files" : "/login");
+            }}
+            className="btn btn-neutral btn-lg"
+          >
+            Get Started
+          </button>
+        )}
       </div>
     </div>
   );

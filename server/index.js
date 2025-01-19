@@ -16,11 +16,6 @@ const PORT = process.env.PORT || 4001;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(async (req, res, next) => {
-  await delay(500);
-  next();
-});
-
 app.use("/api/auth", authMiddleware, authRoute);
 app.use("/api/files", authMiddleware, mediaRoute);
 

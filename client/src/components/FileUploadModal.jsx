@@ -4,7 +4,8 @@ import { FileUploader } from "react-drag-drop-files";
 import { generateSummary } from "../api/files";
 import { SUMMARY_TYPES } from "../constants";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import Loader from "./Loader";
 
 const fileTypes = ["JPG", "PNG", "JPEG", "PDF"];
 
@@ -68,6 +69,8 @@ const FileUploadModal = () => {
   return (
     <>
       <dialog id="upload_modal" className="modal">
+        {generateSummaryMutation.isPending && <Loader />}
+        <ToastContainer />
         <div className="modal-box">
           <h3 className="font-bold text-lg">
             Please upload your pdf/image file and submit!

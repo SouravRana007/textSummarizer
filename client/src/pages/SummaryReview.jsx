@@ -68,7 +68,6 @@ const SummaryReview = () => {
   };
 
   const checkAndRegenerateSummaryIfRequired = (newSummaryType) => {
-    debugger;
     if (!summary[newSummaryType]) {
       regenerateSummaryMutation.mutate({
         fileId,
@@ -83,12 +82,10 @@ const SummaryReview = () => {
   });
 
   if (fileQuery.isPending) {
-    // TODO use skeleton if any
     <Loader />;
   }
 
   if (fileQuery.isError) {
-    // TODO
     return "try again";
   }
 
