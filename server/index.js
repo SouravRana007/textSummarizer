@@ -6,6 +6,11 @@ import authRoute from "./Routes/authRoute.js";
 import mediaRoute from "./Routes/mediaRoute.js";
 import { authMiddleware } from "./middleware/authMiddleware.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,6 +25,16 @@ app.use("/api/auth", authMiddleware, authRoute);
 app.use("/api/files", authMiddleware, mediaRoute);
 
 app.use(errorHandler);
+
+const buildPath = path.join(__dirname, "dist");
+
+// Serve static files
+app.use(express.static(buildPath));
+
+// Handle React routing, return all requests to React app
+app.get("*", (req, res) => {
+  res.sendFile(path.join(buildPath, "index.html"));
+});
 
 // connecting mongoDB with the server
 connectDB()
