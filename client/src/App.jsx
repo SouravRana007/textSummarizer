@@ -1,10 +1,10 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Login from "./pages/login";
-import Register from "./pages/register";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Files from "./pages/Files";
 import SummaryReview from "./pages/SummaryReview";
-import Layout from "./components/layout";
+import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
 import { getCurrentUser } from "./api/auth";
 import Loader from "./components/Loader";
