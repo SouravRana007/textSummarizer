@@ -1,5 +1,4 @@
 import dayjs from "dayjs";
-import { Link } from "react-router-dom";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
@@ -10,10 +9,10 @@ const Card = ({ fileId, fileName, createdAt, onClick }) => {
       <figure>
         <img src="/card_image.webp" alt="image!" />
       </figure>
-      <div className="card-body">
+      <div className="card-body pr-4">
         <h2 className="card-title">{fileName}</h2>
-        <p>Created {relativeTimeText}</p>
-        <div className="card-actions justify-end">
+        <p className="text-sm">Created {relativeTimeText}</p>
+        <div className="card-actions justify-end mt-2">
           <button className="btn btn-neutral" onClick={onClick}>
             View More!
           </button>
